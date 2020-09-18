@@ -3,7 +3,6 @@ package com.core.mf.utils;
 import com.core.mf.models.Nev;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -67,14 +66,18 @@ public class NevRangeHelper {
         }
     }
 
-    public void generateReport(){
+    public int generateReport(){
+        if(nvList.size() < 1)
+            return -1;
         if(checkIntVals() && checkHorizon()) {
             generateHorizonKeys();
             printReport();
         }else{
             LOGGER.log(Level.SEVERE,"Invalid horizon or period of investment for provided data set. Exiting");
-            System.exit(0);
+            //System.exit(0);
+            return -1;
         }
+        return 0;
     }
 
     public boolean checkHorizon(){
@@ -139,7 +142,8 @@ public class NevRangeHelper {
                     System.out.printf("\n%-8s %7s %-20s",monthString,(int)Math.ceil(res * 100) + "%",calcString);
                 }else{
                     LocalDate stNav = nvEnd.getDate().minusYears(periodOfInvestment);
-                    System.out.printf("\n%-8s %7s %-20s",monthString,"0%","Start nav - " + stNav.format(DateTimeFormatter.ofPattern("dd-MMM-yy")) + " End nav - " + nvEnd.getDate().format(DateTimeFormatter.ofPattern("dd-MMM-yy")));
+                    //Printing all 4 digits for the year if there is no data for a date, otherwise it becomes confusing as based on last 2 digits, they may look the same
+                    System.out.printf("\n%-8s %7s %-20s",monthString,"0%","Start nav - " + stNav.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")) + " End nav - " + nvEnd.getDate().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")));
                 }
             }else{
                 endNavKey = endNavKey.substring(0,endNavKey.length() - 4);
@@ -147,10 +151,12 @@ public class NevRangeHelper {
                 String monthString = nvEnd.format(DateTimeFormatter.ofPattern("MMM-yy"));
                 Nev nvStart = getValidNvStart(new Nev(endNavKey,0.0f));
                 if(nvStart != null){
-                    System.out.printf("\n%-8s %7s %-20s",monthString,"0%","Start nav - " + nvStart.getDate().format(DateTimeFormatter.ofPattern("dd-MMM-yy")) + " End nav - " + nvEnd.format(DateTimeFormatter.ofPattern("dd-MMM-yy")));
+                    //Printing all 4 digits for the year if there is no data for a date, otherwise it becomes confusing as based on last 2 digits, they may look the same
+                    System.out.printf("\n%-8s %7s %-20s",monthString,"0%","Start nav - " + nvStart.getDate().format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")) + " End nav - " + nvEnd.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")));
                 }else {
+                    //Printing all 4 digits for the year if there is no data for a date, otherwise it becomes confusing as based on last 2 digits, they may look the same
                     LocalDate stNav = nvEnd.minusYears(periodOfInvestment);
-                    System.out.printf("\n%-8s %7s %-20s", monthString, "0%", "Start nav - " + stNav.format(DateTimeFormatter.ofPattern("dd-MMM-yy")) +  " End nav - " + nvEnd.format(DateTimeFormatter.ofPattern("dd-MMM-yy")));
+                    System.out.printf("\n%-8s %7s %-20s", monthString, "0%", "Start nav - " + stNav.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")) +  " End nav - " + nvEnd.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")));
                 }
             }
         }

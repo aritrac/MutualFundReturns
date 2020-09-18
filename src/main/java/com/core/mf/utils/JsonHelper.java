@@ -6,7 +6,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
@@ -18,10 +17,14 @@ public class JsonHelper {
     private final static String CHARSET_ENCODING = "UTF-8";
     private String url;
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public JsonHelper(String URL){
         this.url = URL;
     }
-    public JSONArray readJsonFromUrl() throws IOException {
+    public JSONArray readJsonFromUrl() throws IOException{
         InputStream is = null;
         try {
             is = new URL(url).openStream();
@@ -34,12 +37,12 @@ public class JsonHelper {
             JSONArray nevList = (JSONArray) jsonObject.get(JsonHelper.DATA_NODE_NAME);
             if(nevList.size() == 0){
                 LOGGER.log(Level.SEVERE,"No data present to be analyzed due to invalid scheme number provided, exiting");
-                System.exit(0);
+                //System.exit(0);
             }
             return nevList;
         }catch(IOException | ParseException ex){
             LOGGER.log(Level.SEVERE,"URL is incorrect or response parsing failure occurred. Exiting");
-            System.exit(0);
+            //System.exit(0);
             return null;
         }
         finally {
