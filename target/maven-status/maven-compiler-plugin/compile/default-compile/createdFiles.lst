@@ -1,0 +1,4 @@
+com\core\mf\NevTester.class
+com\core\mf\models\Nev.class
+com\core\mf\utils\NevRangeHelper.class
+com\core\mf\utils\JsonHelper.class
